@@ -1,0 +1,62 @@
+/* 
+Controls:
+    - Drag left-click to rotate camera.
+    - Drag middle-click to move camera.
+    - Drag right-click to zoom.
+    - E to toggle edges.
+    - P to toggle points.
+    - F to toggle faces. 
+*/
+
+Mesh mesh;
+
+boolean showPoints = false;
+boolean showEdges = true;
+boolean showFaces = true;
+
+PVector mouseClick = new PVector();
+
+PVector rotStart = new PVector();
+PVector posStart = new PVector();
+PVector zoomStart = new PVector();
+
+float rotx = 0;
+float roty = 0;
+float posx = 0;
+float posy = 0;
+float zoom = 0;
+
+
+class Face {
+  ArrayList<Integer> posIndexes;
+  ArrayList<Integer> normalIndexes;
+  
+  Face(ArrayList<Integer> _posIndexes, ArrayList<Integer> _normalIndexes) {
+    this.posIndexes = _posIndexes;
+    this.normalIndexes = _normalIndexes;
+  }
+}
+
+
+class Mesh {
+  ArrayList<float[]> vertexes = new ArrayList<float[]>();
+  ArrayList<float[]> vertexNormals = new ArrayList<float[]>();
+  ArrayList<Face> faces = new ArrayList<Face>();
+  PVector minPos = new PVector();
+  PVector maxPos = new PVector();
+  float offset = 0;
+  
+  void display() {
+    pushMatrix();
+    
+    translate(width/2, height/2);
+    translate(posx, posy, zoom);
+    rotateY(radians(rotx));
+    rotateX(radians(-roty));
+    
+    if (showEdges) {
+      strokeWeight(1);
+      stroke(200);
+    } else {
+      noStroke();
+    }
