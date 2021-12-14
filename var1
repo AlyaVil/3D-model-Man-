@@ -60,3 +60,54 @@ class Mesh {
     } else {
       noStroke();
     }
+if (showFaces) {
+      fill(100);
+    } else {
+      noFill();
+    }
+    
+    float centerOffsetx = -this.offset*(this.minPos.x+this.maxPos.x)/2;
+    float centerOffsety = -this.offset*(this.minPos.y+this.maxPos.y)/2;
+    float centerOffsetz = -this.offset*(this.minPos.z+this.maxPos.z)/2;
+    
+    for (int i = 0; i < this.faces.size(); i++) {
+      Face face = this.faces.get(i);
+      
+      beginShape();
+      for (int x = 0; x < face.posIndexes.size(); x++) {
+        int normalIndex = face.normalIndexes.get(x);
+        float[] n = this.vertexNormals.get(normalIndex);
+        normal(n[0], n[1], n[2]);
+        
+        int vertIndex = face.posIndexes.get(x);
+        float[] pos = this.vertexes.get(vertIndex);
+        vertex(pos[0]*this.offset+centerOffsetx, pos[1]*this.offset+centerOffsety, pos[2]*this.offset+centerOffsetz);
+      }
+      endShape();
+    }
+    
+    if (showPoints) {
+      strokeWeight(3);
+      stroke(255, 255, 0);
+      for (int i = 0; i < this.vertexes.size()-1; i++) {
+        float[] pos = this.vertexes.get(i);
+        point(pos[0]*this.offset+centerOffsetx, pos[1]*this.offset+centerOffsety, pos[2]*this.offset+centerOffsetz);
+      }
+    }
+    
+    popMatrix();
+  }
+  
+  // Only works in processing.js
+  void read(String path, boolean mirrorX, boolean mirrorY, boolean mirrorZ) {
+    String lines[] = loadStrings(path);
+    
+    for (int j = 0; j < lines.length; j++) {
+      String line = lines[j];
+      
+      if (line.startsWith("v ")) { // Get vertex positions
+        String[] lineSplit = split(line, " ");
+        
+        float x = float(lineSplit[1]);
+        float y = float(lineSplit[2]);
+        float z = float(lineSplit[3]);
