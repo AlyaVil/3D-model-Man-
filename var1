@@ -111,3 +111,55 @@ if (showFaces) {
         float x = float(lineSplit[1]);
         float y = float(lineSplit[2]);
         float z = float(lineSplit[3]);
+
+   if (mirrorX) {
+          x = -x;
+        }
+        
+        if (mirrorY) {
+          y = -y;
+        }
+        
+        if (mirrorZ) {
+          z = -z;
+        }
+        
+        if (this.vertexes.size() == 0) {
+          this.minPos.set(x, y, z);
+          this.maxPos.set(x, y, z);
+        } else {
+          this.minPos.x = min(x, this.minPos.x);
+          this.minPos.y = min(y, this.minPos.y);
+          this.minPos.z = min(z, this.minPos.z);
+          this.maxPos.x = max(x, this.maxPos.x);
+          this.maxPos.y = max(y, this.maxPos.y);
+          this.maxPos.z = max(z, this.maxPos.z);
+        }
+        
+        float[] vertPos = {x, y, z};
+        this.vertexes.add(vertPos);
+      } else if (line.startsWith("vn ")) { // Get vertex normals
+        String[] lineSplit = split(line, " ");
+        float[] vertNormals = {float(lineSplit[1]), float(lineSplit[2]), float(lineSplit[3])};
+        this.vertexNormals.add(vertNormals);
+      } else if (line.startsWith("f ")) { // Get face data
+        String[] lineSplit = split(line, " ");
+        
+        ArrayList<Integer> posIndexes = new ArrayList<Integer>();
+        ArrayList<Integer> normalIndexes = new ArrayList<Integer>();
+        
+        for (int i = 1; i < lineSplit.length; i++) {
+          String[] valueSplit = split(lineSplit[i], "/");
+          posIndexes.add(int(valueSplit[0])-1);
+          normalIndexes.add(int(valueSplit[valueSplit.length-1])-1);
+        }
+        
+        this.faces.add(new Face(posIndexes, normalIndexes));
+      }
+    }
+    
+    float modelHeight = dist(0, mesh.minPos.y, 0, mesh.maxPos.y);
+    this.offset = (height-200)/modelHeight;
+  }
+}
+
