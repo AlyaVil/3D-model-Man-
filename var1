@@ -163,3 +163,48 @@ if (showFaces) {
   }
 }
 
+void setup() {
+  size(600, 600, P3D);
+  
+  mesh = new Mesh();
+  String path = "dummy.txt";
+  mesh.read(path, false, true, false);
+}
+
+
+void draw() {
+  background(0);
+  mesh.display();
+}
+
+
+void keyPressed() {
+  if (keyCode == 69) {
+    showEdges = ! showEdges;
+  } else if (keyCode == 80) {
+    showPoints = ! showPoints;
+  } else if (keyCode == 70) {
+    showFaces = ! showFaces;
+  }
+}
+
+
+void mousePressed() {
+  rotStart.set(rotx, roty);
+  posStart.set(posx, posy);
+  zoomStart.set(zoom, zoom);
+  mouseClick.set(mouseX, mouseY);
+}
+
+
+void mouseDragged() {
+  if (mouseButton == LEFT) {
+    rotx = rotStart.x+(mouseX-mouseClick.x);
+    roty = rotStart.y+(mouseY-mouseClick.y);
+  } else if (mouseButton == CENTER) {
+    posx = posStart.x+(mouseX-mouseClick.x);
+    posy = posStart.y+(mouseY-mouseClick.y);
+  } else if (mouseButton == RIGHT) {
+    zoom = zoomStart.x+(mouseX-mouseClick.x)-(mouseY-mouseClick.y);
+  }
+}
